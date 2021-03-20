@@ -1,0 +1,59 @@
+{
+	"hola": "Hello!!!",
+	"chao": "Bye!!!",
+	
+	"general-loadingtext": "Loading...",
+	"general-wave": "Round",
+	
+	"menu-startgametext": "Start game!",
+	"menu-continuegametext": "Continue game",
+	
+	"selectlevel-selectalevel": "Select a Level",
+	"selectlevel-tomenu": "To the menu",
+	
+	"game-nextwavetext": "Time until next round: ",
+	"game-wavetext": "Round: ",
+	"game-productionof": "%1 production rate : ",
+	"game-confirmconstruction": "Confirm construction",
+	"game-confirmupgrade": "Confirm upgrade",
+	"game-confirm": "Confirm",
+	"game-cancel": "Cancel",
+	"game-buildinglevel": "Level",
+	"game-buildingupgrade": "Upgrade",
+	"game-gameover": "Game over!",
+	
+	"gameover-results": "Results",
+	"gameover-clientsserved": "Served customers:",
+	"gameover-clientsnonserved": "Unserved customers:",
+	"gameover-roundsfinished": "Finished rounds:",
+	"gameover-moneyrecollected": "Money recollected:",
+	"gameover-finaldestiny": "Destiny:",
+	"gameover-tomenu": "To the menu",
+	
+	"buildings-wheat-title": "Wheat field",
+	"buildings-wheat-type": "Wheat",
+	"buildings-lemon-title": "Lemon tree",
+	"buildings-lemon-type": "Lemon",
+	"buildings-milk-title": "Cow",
+	"buildings-milk-type": "Milk",
+	"buildings-stand-title": "Stand",
+	"buildings-stand-type": "",
+	"buildings-house-title": "House",
+	"buildings-house-desc": "This is your house!!",
+	"buildings-garage-title": "Garage",
+	"buildings-garage-desc": "This is the garage!!",
+	"buildings-stand-title": "Stand",
+	"buildings-stand-recipes": "Recipes",
+	"buildings-icecreamstand-title": "Icecream Stand",
+	"buildings-lemonadestand-title": "Lemonade Stand",
+	"buildings-cakestand-title": "Cake Stand",
+	
+	"destinations-nothing": "Nothing",
+	"destinations-pool": "Neighbors Pool",
+	"destinations-shopping": "Shopping Centre",
+	"destinations-beach": "The Beach",
+	"destinations-amusement": "Amusement Park!",
+	"destinations-island": "Tropical Island",
+	"destinations-moon": "The Moon"
+	
+}

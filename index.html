@@ -1,0 +1,131 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="utf-8" />
+    <title>Sweet Trip demo</title>
+
+    <script type="text/javascript" src="phaser-master/build/phaser.js"></script>
+    <script type="text/javascript" src="phaser-master/build/phaser-plugin-isometric.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="user-scalable=0, initial-scale=1, minimum-scale=1, maximum-scale=1, width=device-width, minimal-ui=1">
+    <style type="text/css">
+        body{
+                margin:0;
+                padding:0;
+                overflow:hidden;
+                background-color:#333;
+            }
+            #game{
+                margin:0 auto;
+            }
+            #orientation{
+                height:100%;
+                width:100%;
+                left:0;
+                top:0;
+                display:none;
+                z-index:100;
+                position:fixed;
+                background:#000 url(assets/orientation-landscape.jpg) center center no-repeat;
+            }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+    <div id="orientation"></div>
+
+
+<script>
+var screenOrientation = screen.width > screen.height ? 90 : 0;
+window.onresize =  function(){
+    screenOrientation = screen.width > screen.height ? 90 : 0;
+};
+</script>
+
+<script type="text/javascript">
+var isLandscape;
+if(screenOrientation == 90){
+    isLandscape = true;
+}
+else{
+    isLandscape = false;
+}
+
+
+isLandscape = false;
+
+var w,h;
+if(isLandscape){
+
+    if(screen.height <= 480){
+        w = 480;
+        h = 280;
+    }
+    else{
+        w = 480;
+        h = 320;
+    }
+    
+}
+else{
+    w = 320,
+    h = 480;
+}
+
+
+
+
+var game = new Phaser.Game(w, h, Phaser.AUTO,'phaser-example');
+
+
+function restartGame(){
+    game.state.restart();
+}
+
+BasicGame = {};
+
+
+</script>
+
+<script type="text/javascript" src="classes/pieprogress.js"></script>
+<script type="text/javascript" src="classes/progressbar.js"></script>
+
+<script type="text/javascript" src="classes/ScreenOrientationManager.js"></script>
+
+<script type="text/javascript" src="classes/stands.js"></script>
+<script type="text/javascript" src="classes/customer.js"></script>
+<script type="text/javascript" src="classes/wavegenerator.js"></script>
+<script type="text/javascript" src="classes/wavemanager.js"></script>
+<script type="text/javascript" src="classes/localizableStrings.js"></script>
+<script type="text/javascript" src="classes/gameVarsData.js"></script>
+<script type="text/javascript" src="classes/saveManager.js"></script>
+
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript" src="selectlevel.js"></script>
+<script type="text/javascript" src="game.js"></script>
+<script type="text/javascript" src="gameover.js"></script>
+
+<script type="text/javascript">
+
+game.state.add('Menu',BasicGame.Menu);
+game.state.add('SelectLevel',BasicGame.SelectLevel);
+game.state.add('Game',BasicGame.Game);
+game.state.add('Gameover',BasicGame.Gameover);
+
+game.state.start('Menu');
+game.scale = Phaser.ScaleManager.SHOW_ALL;
+
+
+
+ScreenOrientationManager.init();
+ScreenOrientationManager.lockOrientation('portrait-primary');
+
+
+</script>
+
+
+
+</body>
+</html>     

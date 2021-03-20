@@ -1,0 +1,452 @@
+//Toda cosa que no está en este js está en game.js. Esto incluye carga de assets, que deben ser declaradas en loading,
+//y variables de estado que probablemente esten como vars dentro de game.jsx
+var radialMenuGroup;
+function stand()
+{
+    //Crea un stand generico. En rigor debería poner todo como this.propiadad_stand y luego devover this pero
+    //ain't nobody got time for this
+    var stand = 
+	{
+	    
+	    stock: {
+		lemonade: {
+		    count: 0,
+		    icon:'lemon_icon'
+		},
+		cake: {
+		    count: 0,
+		    icon:'wheat_icon'
+		},
+		icecream: {
+		    count: 0,
+		    icon: 'milk_icon'
+		}
+	    }, //Stock tiene el inventario para vender cosas.
+	    
+	    RECIPES: { //Todas las recetas, con sus ingredientes
+		LEMONADE: {
+		    ingredients: ['lemon','lemon','lemon'],
+		    result: 'lemonade'
+		}
+	    },
+	    UPGRADEOPTIONS: { //Opciones para upgradear. Ultimos dos reservados para informacion y eliminacion de stands
+		//Funcion para stand debe tener un parametro para el context (function(context))
+		LEMONADESTAND: {
+		    name: 'lemon_icon',
+		    upgrade: null
+		},
+		ICECREAMSTAND: {
+		    name: 'milk_icon',
+		    upgrade: null
+		},
+		CAKESTAND: {
+		    name: 'wheat_icon',
+		    upgrade: null
+		},
+		DELETESTAND: {
+		    name: 'cross',
+		    upgrade: null
+		}
+		
+		
+	    },
+	    upgradesize: 3.0, //Tiene la cantidad de opciones de upgrade propiamente tal. Idealmente esto se hace en forma automatica pero meh
+	   
+
+	    set_upgrade_paths: function()
+	    {
+		//Setea las funciones para upgradear de caada opcion de upgrade
+		for(upoption in this.UPGRADEOPTIONS)
+		{
+		    this.UPGRADEOPTIONS[upoption].upgrade = this.upgrade;
+		};
+		this.UPGRADEOPTIONS.DELETESTAND.upgrade = this.delete_stand;
+		
+	    },
+	    delete_stand: function(context)
+	    {
+		//Elimina todo el stand, sprite y todo
+		context.stockGroup.destroy(true);
+		buildings.destroy_building(context.stand_sprite.tile_x,context.stand_sprite.tile_y);
+		context.stand_sprite.destroy();
+		
+	    },
+	    create_stand: function(x_,y_,isoGroup)
+	    {
+		return stands.create_generic_stand(x_,y_,isoGroup,'stand',this);
+	    },
+	    create_stock_sprites: function()
+	    {
+		//Crea los sprites que muestran el stock encima de los stands. Tambien hace que parpadeen cuando no hay stock
+		this.stockGroup = game.add.group();
+		var x = this.stand_sprite.tile_x;
+		var y = this.stand_sprite.tile_y;
+		var i = 0;
+		for(sellable in this.stock)
+		{
+		    var sellableSprite = game.add.isoSprite(Math.floor(x)*50, Math.floor(y)*50 + i*15, 55,this.stock[sellable].icon, 0, isoGroup2);
+		    sellableSprite.anchor.setTo(0.5,0.64,0.0);
+		    sellableSprite.scale.set(0.5);
+		    sellableSprite.alpha = 0.3;
+		    sellableSprite.sellable_type = sellable;
+		    sellableSprite.tween = game.add.tween(sellableSprite);
+		    sellableSprite.tween = sellableSprite.tween.to({alpha:0.7},0.5*Phaser.Timer.SECOND,Phaser.Easing.Linear.None, false, 0, Number.MAX_VALUE , true);
+		    sellableSprite.tween = sellableSprite.tween.start();
+		    this.stockGroup.add(sellableSprite);
+		    i++;
+		}
+	    },
+	    check_stock: function()
+	    {
+		//Ve si es que hay stock, y luego evita que parpadee si es que hay
+		var currentStock = this.stock;
+		this.stockGroup.forEach(function(stockSprite){
+		    if(currentStock[stockSprite.sellable_type].count >= 1){
+			stockSprite.tween.pause();
+			stockSprite.alpha = 1;
+			stockSprite.tint = 0xffffff;
+		    }
+		    else{
+			stockSprite.tween.start();
+		    }
+			
+		});
+	    },
+	    prepare_stock: function(stockName)
+	    {
+		//Cambia el tint de un item de stock para denotar que esta siendo cocinado
+		this.stockGroup.forEach(function(stockSprite){
+		    if(stockSprite.sellable_type === stockName){
+			stockSprite.tint = 0xff0000;
+		    }
+			
+		});
+	    },
+	    create_upgrade_options: function()
+	    {
+		//Crea las opciones de upgrade, incluyendo las de eliminar y las de mostrar info
+		//Va rellenando desde la posicion izquierda en el sentido de las manecillas del reloj
+	
+		var deltaAngle = (Math.PI)/this.upgradesize;	
+		var radius = 30; 
+		var angle = 1.15*Math.PI;
+		for(upoptions in this.UPGRADEOPTIONS)
+		{
+		    
+		    var name = this.UPGRADEOPTIONS[upoptions].name;
+		    if(upoptions === "DELETESTAND")
+		    {
+			//Caso especial para el boton eliminar. Reserva espacio abajo y da un tinte distinto
+			var optionSprite = new Phaser.Sprite(game,0,radius-10,name,0);
+			optionSprite.anchor.setTo(0.5,0.5);
+			optionSprite.scale.setTo(1);
+			optionSprite.inputEnabled = true;
+			optionSprite.input.priorityID = 2;
+			optionSprite.events.onInputOver.add(function()
+							    {
+								var tween = game.add.tween(this.sprite);
+								tween.to({tint:0xff0000},100);
+								tween.start();
+								//Hay que avisar sobre que hay que upgradear
+								this.context.toUpgrade = true;
+								this.context.upgradeTo = this.spname;
+								
+							    },{context:this,sprite:optionSprite,spname:upoptions});
+			optionSprite.events.onInputOut.add(function()
+							   {
+							       var tween = game.add.tween(this.sprite);
+							       tween.to({tint:0xffffff},100);
+							       tween.start();
+							       this.context.toUpgrade = false;
+							       this.context.upgradeTo = null;
+							       
+							   },{context:this,sprite:optionSprite,spname:upoptions});
+			optionSprite.events.onInputDown.add(this.upgrade_or_hide,this);
+			radialMenuGroup.add(optionSprite);
+			angle += deltaAngle;
+		    }
+		    else
+		    {
+			var optionSprite = new Phaser.Sprite(game,radius*Math.cos(angle),radius*Math.sin(angle)-10,name,0);
+			optionSprite.anchor.setTo(0.5,0.5);
+			optionSprite.scale.setTo(0.5);
+			optionSprite.inputEnabled = true;
+			optionSprite.input.priorityID = 2;
+			optionSprite.events.onInputOver.add(function()
+							    {
+								var tween = game.add.tween(this.sprite);
+								tween.to({tint:0x00ff00},100);
+								tween.start();
+								//Hay que avisar sobre que hay que upgradear
+								this.context.toUpgrade = true;
+								this.context.upgradeTo = this.spname;
+								
+							    },{context:this,sprite:optionSprite,spname:upoptions});
+			optionSprite.events.onInputOut.add(function()
+							   {
+							       var tween = game.add.tween(this.sprite);
+							       tween.to({tint:0xffffff},100);
+							       tween.start();
+							       this.context.toUpgrade = false;
+							       this.context.upgradeTo = null;
+							       
+							   },{context:this,sprite:optionSprite,spname:upoptions});
+			optionSprite.events.onInputDown.add(this.upgrade_or_hide,this);
+			radialMenuGroup.add(optionSprite);
+			angle += deltaAngle;
+		    }	
+		}
+	    },
+	    show_radial_menu: function()
+	    {
+		//Crea el menu radial con las opciones genericas
+		
+		stands.hide_all_menus();    
+		BuildingPickerGroup_hidePicker();
+		dragging_tile_selected = true;
+		var x = this.stand_sprite.x;
+		var y = this.stand_sprite.y;
+		radialMenuGroup.x = x;
+		radialMenuGroup.y = y;
+		var radialBackground = new Phaser.Sprite(game,0,0,'upgrade_picker', 0);
+		radialBackground.anchor.setTo(0.5,0.5);
+		radialBackground.scale.setTo(1.2);
+		radialBackground.inputEnabled = true;
+		radialBackground.input.priorityID = 2;
+		radialMenuGroup.add(radialBackground);
+		this.create_upgrade_options();
+		
+		game.world.bringToTop(radialMenuGroup);
+		console.log("radial_menu");
+		game.input.reset(true);
+		    
+	    },
+	    upgrade_or_hide: function()
+	    {
+		//Ve si tiene que upgradear al soltar el boton o simplemente esconder todo
+		stands.hide_all_menus();
+		if(this.toUpgrade)
+		{
+		    console.log("upgrading");
+		    this.confirm_upgrade_menu();
+		}
+		
+		dragging_tile_selected = false;
+	    },
+	    confirm_upgrade_menu: function()
+	    {
+		//Crea un menu de confirmación de upgrade
+		BuildingPickerGroup_hidePicker();
+		dragging_tile_selected = true;
+		var x = this.stand_sprite.x;
+		var y = this.stand_sprite.y;
+		radialMenuGroup.x = x;
+		radialMenuGroup.y = y;
+		var radialBackground = new Phaser.Sprite(game,0,0,'upgrade_picker', 0);
+		radialBackground.anchor.setTo(0.5,0.5);
+		radialBackground.scale.setTo(1.2);   
+		radialBackground.inputEnabled = true;
+		radialBackground.input.priorityID = 2;
+		radialMenuGroup.add(radialBackground);
+		
+		this.confirm_upgrade_options();
+		game.world.bringToTop(radialMenuGroup);
+	    },
+	    confirm_upgrade_options: function()
+	    {
+		//Muestra una imagen al centro y muestra 2 opciones
+		var optionSprite = new Phaser.Sprite(game,0,-30,this.UPGRADEOPTIONS[this.upgradeTo].name,0);
+		optionSprite.anchor.setTo(0.5,0.5);
+		optionSprite.scale.setTo(0.5);
+		radialMenuGroup.add(optionSprite);
+
+		var upgradeButton = new Phaser.Sprite(game,15,15,'check',0);
+		upgradeButton.anchor.setTo(0.5,0.5);
+		upgradeButton.scale.setTo(1);
+		upgradeButton.inputEnabled = true;
+		upgradeButton.input.priorityID = 2;
+		upgradeButton.events.onInputDown.add(function(){
+		    this.UPGRADEOPTIONS[this.upgradeTo].upgrade(this);
+		    this.hide_radial_menu();
+		},this);
+
+		upgradeButton.events.onInputOver.add(function(){
+		    var tween = game.add.tween(this.sprite);
+		    tween.to({tint:0x00ff00},100);
+		    tween.start();
+		},{context:this,sprite:upgradeButton});
+
+		upgradeButton.events.onInputOut.add(function() {
+		    var tween = game.add.tween(this.sprite);
+		    tween.to({tint:0xffffff},100);
+		    tween.start();
+		},{context:this,sprite:upgradeButton});
+
+		radialMenuGroup.add(upgradeButton);
+		var cancelButton =  new Phaser.Sprite(game,-15,15,'cross',0);
+		cancelButton.anchor.setTo(0.5,0.5);
+		cancelButton.scale.setTo(1);
+		cancelButton.inputEnabled = true;
+		cancelButton.input.priorityID = 2;
+		cancelButton.events.onInputDown.add(function(){
+		    this.hide_radial_menu();
+		},this);
+
+		cancelButton.events.onInputOver.add(function(){
+		    var tween = game.add.tween(this.sprite);
+		    tween.to({tint:0xff0000},100);
+		    tween.start();
+		},{context:this,sprite:cancelButton});
+
+		cancelButton.events.onInputOut.add(function() {
+		    var tween = game.add.tween(this.sprite);
+		    tween.to({tint:0xffffff},100);
+		    tween.start();
+		},{context:this,sprite:cancelButton});
+
+		radialMenuGroup.add(cancelButton);
+		
+	    },
+	    upgrade: function(context)
+	    {
+		
+		if(context.upgradeTo == "CAKESTAND")
+		{
+		  
+		   
+		}
+		var newstand = stands.create_cakestand;
+		context.delete_stand(context);
+		buildings.upgrade_stand(context.stand_sprite.tile_x,context.stand_sprite.tile_y,isoGroup2,newstand);
+	    },
+	    hide_radial_menu: function()
+	    {
+		//Esconde el menu. Para esto trata de destruir cada elemento de el
+		radialMenuGroup.destroy(true,true);
+		this.showingMenu = false;
+		dragging_tile_selected = false;
+	    },
+	    keep_menu_onTop: function()
+	    {
+		if(stands.radialMenuGroup)
+		{
+		    game.world.bringToTop(radialMenuGroup);
+		}
+	    },
+	    cook_resources: function()
+	    {
+		//Genera los recursos a partir de las recetas,  viendo si 
+		//se puede hacer la receta y guardando el resultado en el stand
+		//mismo solo si se puede hacer.
+		var ingredients = {};
+		var readyToCook = false;
+		for(recipe in this.RECIPES)
+		{
+		    for(i = 0; i< this.RECIPES[recipe].ingredients.length; i++)
+		    {
+			readyToCook = true;
+			var ingredient = this.RECIPES[recipe].ingredients[i];
+			if(ingredients[ingredient] == null)
+			{
+			    ingredients[ingredient] = 0;
+			}
+			if(resources[ingredient] - ingredients[ingredient] > 0)
+			{
+			    //Queremos ver si es que necesita mas de 1 de un recurso que lo tome
+			    //en cuenta antes de ver si puede hacer la receta o no
+			    ingredients[ingredient] += 1;
+			}
+			else
+			{
+			    readyToCook = false;
+			    break;
+			}
+		    }
+		    if(readyToCook)
+		    {
+			var stock = this.stock[this.RECIPES[recipe].result].count;
+			//Por ahora solo permite aumentar en 1 el stock
+			if(!this.cooking && (stock == null ||stock <= 0))
+			{
+			    this.cooking = true;
+			    this.prepare_stock(this.RECIPES[recipe].result);
+			    game.time.events.add(15*Phaser.Timer.SECOND,function(){
+				this.stock[this.RECIPES[recipe].result].count = 1;
+				this.check_stock();
+				this.cooking = false;
+			    },this);
+			    for(ingredient in ingredients)
+			    {
+				resources[ingredient]-= ingredients[ingredient];
+			    }
+			    
+			}
+		    }
+		}
+		
+		
+	    },
+	    sell_food: function()
+	    {
+		//Vende la comida del stand. Probablemente haya que pedir un context en caso
+		//que this pase a ser cualquier otra cosa que no sea stand()
+		
+	    }
+	};
+    return stand;
+};
+var stands =  {
+    //Cosas relacionadas con stands que son compartidas por todos
+    init_group: function()
+    {
+	radialMenuGroup = game.add.group();
+    },
+    create_generic_stand: function(x_,y_,isoGroup,spriteName,context){
+	//Crea un stand generico
+	var stand = game.add.isoSprite(Math.floor(x_)*50, Math.floor(y_)*50 , 0,'stand', 0, isoGroup2);
+	stand.name = 'stand';
+	stand.building_type = 'stand';
+	stand.anchor.setTo(0.5,0.64,0.0);
+	stand.scale.set(1.0);
+	stand.tile_x = x_;
+	stand.tile_y = y_;
+	stand.cook_timer = game.time.create(false);
+	stand.cook_timer.start();
+	stand.cook_timer.loop(Phaser.Timer.SECOND*5,context.cook_resources,context);
+	stand.inputEnabled = true;
+	//stand.events.onInputDown.add(this.show_radial_menu,this);
+	//stand.events.onInputUp.add(this.upgrade_or_hide,this);
+	//Tecnicamente a estas funciones no se puede acceder desde los tiles, por eso la pongo como atributo del sprite
+	stand.sell_food = context.sell_food; 
+	stand.stand_context = context; //En caso de necesitar las funciones de stand teniendo solo el tile
+	context.stand_sprite = stand;
+	context.set_upgrade_paths();
+	context.create_stock_sprites();
+	context.cooking = false;
+	return stand;
+    },
+    hide_all_menus: function(){
+	//Al "destruir" el grupo se destruye el menu independiente del stand
+	//este destroy no elimina el grupo en si sino que solo destruye los sprites dentro de el.
+	radialMenuGroup.destroy(true,true);
+	dragging_tile_selected = false;
+    },
+    create_cakestand: function()
+    {
+	//Crea un cakestand partiendo del stand generico
+	var newstand = stand();
+	newstand.UPGRADEOPTIONS = {
+	    DELETESTAND: newstand.UPGRADEOPTIONS['DELETESTAND']
+	};
+	newstand.create_stand = function(x_,y_,isoGroup)
+	{
+	    //Crea stands con el comportamiento de stand (robar recursos, cocinar, etc)
+	    stands.create_generic_stand(x_,y_,isoGroup,'stand',this);
+	    this.stand_sprite.name = 'cakestand';
+	};
+	
+	   
+	
+	return newstand;
+    }
+}

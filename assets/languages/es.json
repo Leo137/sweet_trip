@@ -1,0 +1,59 @@
+﻿{
+	"hola": "Hola!!!",
+	"chao": "Chao!!!",
+	
+	"general-loadingtext": "Cargando...",
+	"general-wave": "Ronda",
+	
+	"menu-startgametext": "Empezar juego!",
+	"menu-continuegametext": "Continuar juego",
+	
+	"selectlevel-selectalevel": "Elige Nivel",
+	"selectlevel-tomenu": "Ir al menu",
+	
+	"game-nextwavetext": "Tiempo para la siguiente ronda: ",
+	"game-wavetext": "Ronda: ",
+	"game-productionof": "Produccion de %1 : ",
+	"game-confirmconstruction": "Confirmar construcción",
+	"game-confirmupgrade": "Confirmar mejora",
+	"game-confirm": "Confirmar",
+	"game-cancel": "Cancelar",
+	"game-buildinglevel": "Nivel",
+	"game-buildingupgrade": "Mejorar",
+	"game-gameover": "Juego Terminado!",
+	
+	"gameover-results": "Resultados",
+	"gameover-clientsserved": "Clientes atendidos:",
+	"gameover-clientsnonserved": "Clientes sin atender:",
+	"gameover-roundsfinished": "Rondas finalizadas:",
+	"gameover-moneyrecollected": "Dinero recolectado:",
+	"gameover-finaldestiny": "Destino final:",
+	"gameover-tomenu": "Ir al menu",
+	
+	"buildings-wheat-title": "Campo de Trigo",
+	"buildings-wheat-type": "trigo",
+	"buildings-lemon-title": "Limonero",
+	"buildings-lemon-type": "limones",
+	"buildings-milk-title": "Vaca",
+	"buildings-milk-type": "leche",
+	"buildings-stand-title": "Stand",
+	"buildings-stand-type": "",
+	"buildings-house-title": "Casa",
+	"buildings-house-desc": "Esta es tu Casa!!",
+	"buildings-garage-title": "Garage",
+	"buildings-garage-desc": "Este es el Garage!!",
+	"buildings-stand-title": "Stand",
+	"buildings-stand-recipes": "Recetas",
+	"buildings-icecreamstand-title": "Stand de Helados",
+	"buildings-lemonadestand-title": "Stand de Limonada",
+	"buildings-cakestand-title": "Stand de Pasteles",
+	
+	"destinations-nothing": "Ninguno",
+	"destinations-pool": "Piscina del barrio",
+	"destinations-shopping": "Centro comercial",
+	"destinations-beach": "La playa",
+	"destinations-amusement": "Parque de diversiones!",
+	"destinations-island": "Isla Tropical",
+	"destinations-moon": "La Luna"
+	
+}

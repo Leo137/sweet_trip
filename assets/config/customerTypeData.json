@@ -1,0 +1,1 @@
+{"normal":{"spriteName":"customer","baseSpeed":2,"PREFERENCES":"everything,lemonade,icecream,cake","timesToEat":1,"baseDamage":20,"baseHeal":2},"gordo":{"spriteName":"fatcustomer","baseSpeed":1,"PREFERENCES":"everything,lemonade,icecream,cake","timesToEat":2,"baseDamage":20,"baseHeal":2},"":{"timesToEat":null}}
