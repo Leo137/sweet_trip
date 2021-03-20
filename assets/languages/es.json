@@ -8,9 +8,6 @@
 	"menu-startgametext": "Empezar juego!",
 	"menu-continuegametext": "Continuar juego",
 	
-	"selectlevel-selectalevel": "Elige Nivel",
-	"selectlevel-tomenu": "Ir al menu",
-	
 	"game-nextwavetext": "Tiempo para la siguiente ronda: ",
 	"game-wavetext": "Ronda: ",
 	"game-productionof": "Produccion de %1 : ",

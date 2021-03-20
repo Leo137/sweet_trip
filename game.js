@@ -1669,7 +1669,7 @@ create: function() {
     isoGroup2 = game.add.group();
     alertsGroup = game.add.group();
 
-    /*if(isContinuing){
+    if(isContinuing){
         SaveManager.continueGame();
         for(var y = 0; y < map.height; ++y){
             for(var x = 0; x < map.width; ++x){
@@ -1726,7 +1726,8 @@ create: function() {
         health = info.health;
         // currentWaveIndex se lee directo en el manager
 
-    }*/
+    }
+    else{
 
         buildings.create_wheat(19,17,isoGroup2);
         buildings.create_milk(19,18,isoGroup2);
@@ -1735,7 +1736,7 @@ create: function() {
         buildings.create_stand(19,16,isoGroup2);
 
         currentStatsManager = new StatsManager();
-    
+    } 
 
     buildings.create_house(26,18,isoGroup2);
     buildings.create_garage(27,18,isoGroup2);

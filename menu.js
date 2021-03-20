@@ -1,23 +1,14 @@
 function toGame(){
     SaveManager.resetSave();
     button_click.play();
-
     game.state.start('Game');
 }
 
 function toGameContinue(){
     button_click.play();
 
+    isContinuing = true;
     game.state.start('Game');
-}
-
-function toSelectLevel(){
-    //SaveManager.resetSave();
-    SaveManager.continueGame();
-    button_click.play();
-
-    //isContinuing = false;
-    game.state.start('SelectLevel');
 }
 
 var button_click;
@@ -61,7 +52,7 @@ loadUpdate : function(){
         }
     }
 },
-preload: function() {   
+preload: function() {
 
     LocalizableStrings.loadFile();
     GameVarsData.loadFile();
@@ -116,10 +107,10 @@ create: function() {
 
     this.startGameText.inputEnabled = true;
     //startGameText.input.enableDrag();
-    this.startGameText.events.onInputDown.add(toSelectLevel, this);
+    this.startGameText.events.onInputDown.add(toGame, this);
 
 
-    /*if(SaveManager.hasData()){
+    if(SaveManager.hasData()){
         this.continueGameText = game.add.text(game.width/2, game.height/2 + game.height/2.5, LocalizableStrings.getString("menu-continuegametext"), { font: "bold 34px Arial", fill: "#FFFFFF" });
         this.continueGameText.fixedToCamera = true;
         this.continueGameText.anchor.set(0.5);
@@ -135,7 +126,7 @@ create: function() {
         else{
             this.startGameText.y -= 30;
         }
-    }*/
+    }
 
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;

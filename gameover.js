@@ -34,8 +34,6 @@ function StatsManager(){
 }
 
 function toMenu(){
-    button_click.play();
-    
     game.state.start('Menu');
 }
 

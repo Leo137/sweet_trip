@@ -34,7 +34,7 @@ PieProgress.prototype.updateProgress = function() {
     this.bmp.ctx.fill();
     
     this.bmp.ctx.beginPath();
-    this.bmp.ctx.arc(this._radius, this._radius, this._radius*0.6, 0, (Math.PI * 2) * 1, true);
+    this.bmp.ctx.arc(this._radius, this._radius, this._radius*0.6, 0, (Math.PI * 2) * progress, true);
     this.bmp.ctx.lineTo(this._radius, this._radius);
     this.bmp.ctx.globalCompositeOperation = this.compositeTypes[6];
     this.bmp.ctx.closePath();
